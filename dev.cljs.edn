@@ -1,0 +1,5 @@
+;; ^{:connect-url "ws://scratch.clj.com/figwheel-connect"
+;;   :open-url "http://scratch.clj.com"}
+
+{:main scratch.core
+ :output-to "resources/public/main.js"}
