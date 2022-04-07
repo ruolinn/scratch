@@ -1,21 +1,9 @@
-(ns scratch.core
+(ns ^:figwheel-hooks scratch.core
   (:require [reagent.core :as r]
             [reagent.dom :as d]
             [re-frame.core :as rf]
-            [ajax.core :refer [GET POST]]))
-
-(defn home-page []
-  [:div
-   [:ul
-    (for [item (range 3)]
-      ^{:key item} [:li "Item " item])]])
-
-(defn counting-button [txt]
-  (let [state (r/atom 0)]
-    (fn [txt]
-      [:button.green
-       {:on-click #(swap! state inc)}
-       (str txt " " @state)])))
+            [ajax.core :refer [GET POST]]
+            [re-com.core :as re-com :refer [at]]))
 
 (defn buy-botton [item-id]
   [:button
@@ -24,14 +12,61 @@
                 (rf/dispatch [:buy 1]))}
    "Buy"])
 
+(defn clean-botton []
+  [:button
+   {:on-click (fn [e]
+                (.preventDefault e)
+                (rf/dispatch [:clean]))}
+   "Clean"])
+
+(defn cart []
+  (let [items (rf/subscribe [:cart-items])]
+    (fn []
+      [buy-botton]
+      [:ul
+       [:li "enens"]
+       (doall
+        (for [item @items]
+          [:li {:key (:id item)} (:id item)]))])))
+
+(defn cart-icon []
+  (let [items (rf/subscribe [:cart-items])]
+    (fn []
+      [:span "total: " (count @items)])))
+
+(defn home-page []
+  [:div
+   [buy-botton]
+   [clean-botton]
+   [cart-icon]
+   [cart]])
+
+
+
+
+
+(defn counting-button [txt]
+  (let [state (r/atom 0)]
+    (fn [txt]
+      [:button.green
+       {:on-click #(swap! state inc)}
+       (str txt " " @state)])))
+
+(rf/reg-event-fx
+ :clean
+ (fn [cofx _]
+   (js/alert (:db cofx))
+   {:db (update-in (:db cofx) [:items] nil)}))
+
 (rf/reg-event-fx
  :buy
- [(rf/inject-cofx :now)]
+ [(rf/inject-cofx :temp-id)]
  (fn [cofx [_ item-id]]
    {:http-xhrio {:uri "http://app.clj.com/hi"
                  :method :get
-                 :params {:time (:now cofx)}}
-    :do-co {:params {:time (:now cofx)}}}))
+                 :params {:tid (:temp-id cofx)}}
+    :do-co {:params {:tid (:temp-id cofx)}}
+    :db (update-in (:db cofx) [:items] conj {:id (:temp-id cofx)})}))
 
 
 
@@ -55,10 +90,43 @@
  (fn [cofx _data]
    (assoc cofx :now (js/Date.))))
 
+(defonce last-temp-id (atom 0))
+
+(rf/reg-cofx
+ :temp-id
+ (fn [cofx _]
+   (assoc cofx :temp-id (swap! last-temp-id inc))))
 
 
-(defn mount-root []
-  (d/render [buy-botton 1] (.getElementById js/document "app")))
+(rf/reg-sub
+ :cart-items
+ (fn [db _]
+   (:items db)))
 
-(defn ^:export init []
-  (mount-root))
+(defn title []
+  [re-com/title
+   :label (str "Hello")])
+
+
+(defn main-panel []
+  [re-com/v-box
+   :height "100%"
+   :children [[title]
+              ]])
+
+
+(defn mount []
+  (rf/clear-subscription-cache!)
+  (let [root (.getElementById js/document "app")]
+    (d/unmount-component-at-node root)
+    (d/render [re-com/button
+               :label "Click me"
+               :on-click (fn [e]
+                           (js/alert "hshsh"))
+               ] root)))
+
+
+(defn ^:after-load re-render []
+  (mount))
+
+(defonce start-up (do (mount) true))

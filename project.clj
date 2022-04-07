@@ -9,6 +9,7 @@
                  [cljsjs/react-dom "17.0.2-0"]
                  [re-frame "1.3.0-rc3"]
                  [cljs-ajax "0.8.4"]
+                 [re-com "2.13.2"]
                  [hiccup "1.0.5"]]
   :source-paths ["src"]
   :plugins []
