@@ -10,7 +10,9 @@
                  [re-frame "1.3.0-rc3"]
                  [cljs-ajax "0.8.4"]
                  [re-com "2.13.2"]
-                 [hiccup "1.0.5"]]
+                 [hiccup "1.0.5"]
+                 [re-pollsive "0.1.0"]
+                 [arttuka/reagent-material-ui "5.5.0-0"]]
   :source-paths ["src"]
   :plugins []
   :profiles {:dev {

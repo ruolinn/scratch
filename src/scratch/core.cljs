@@ -3,7 +3,8 @@
             [reagent.dom :as d]
             [re-frame.core :as rf]
             [ajax.core :refer [GET POST]]
-            [re-com.core :as re-com :refer [at]]))
+            [re-com.core :as re-com :refer [at]]
+            [scratch.dash :refer [main-panel]]))
 
 (defn buy-botton [item-id]
   [:button
@@ -103,27 +104,13 @@
  (fn [db _]
    (:items db)))
 
-(defn title []
-  [re-com/title
-   :label (str "Hello")])
-
-
-(defn main-panel []
-  [re-com/v-box
-   :height "100%"
-   :children [[title]
-              ]])
-
 
 (defn mount []
   (rf/clear-subscription-cache!)
   (let [root (.getElementById js/document "app")]
+    (rf/dispatch-sync [::scratch.dash/initialize-db])
     (d/unmount-component-at-node root)
-    (d/render [re-com/button
-               :label "Click me"
-               :on-click (fn [e]
-                           (js/alert "hshsh"))
-               ] root)))
+    (d/render [main-panel] root)))
 
 
 (defn ^:after-load re-render []
