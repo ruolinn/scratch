@@ -8,6 +8,8 @@
                  [cljsjs/react "17.0.2-0"]
                  [cljsjs/react-dom "17.0.2-0"]
                  [re-frame "1.3.0-rc3"]
+                 [day8.re-frame/http-fx "v0.2.0"]
+                 [day8.re-frame/tracing "0.5.5"]
                  [cljs-ajax "0.8.4"]
                  [re-com "2.13.2"]
                  [hiccup "1.0.5"]

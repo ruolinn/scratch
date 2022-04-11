@@ -4,7 +4,10 @@
             [re-frame.core :as rf]
             [ajax.core :refer [GET POST]]
             [re-com.core :as re-com :refer [at]]
-            [scratch.dash :refer [main-panel]]))
+            [re-pollsive.core :as poll]
+            [scratch.events :as events]
+            [scratch.polling :as poll-config]
+            [scratch.views :as views]))
 
 (defn buy-botton [item-id]
   [:button
@@ -108,9 +111,11 @@
 (defn mount []
   (rf/clear-subscription-cache!)
   (let [root (.getElementById js/document "app")]
-    (rf/dispatch-sync [::scratch.dash/initialize-db])
+    (rf/dispatch-sync [::events/initialize-db])
+    (rf/dispatch-sync [::poll/init])
+    (rf/dispatch [::poll/set-rules poll-config/rules])
     (d/unmount-component-at-node root)
-    (d/render [main-panel] root)))
+    (d/render [views/main-panel] root)))
 
 
 (defn ^:after-load re-render []
