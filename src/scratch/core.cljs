@@ -7,7 +7,8 @@
             [re-pollsive.core :as poll]
             [scratch.events :as events]
             [scratch.polling :as poll-config]
-            [scratch.views :as views]))
+            [scratch.views :as views]
+            [scratch.app :refer [app]]))
 
 (defn buy-botton [item-id]
   [:button
@@ -112,10 +113,10 @@
   (rf/clear-subscription-cache!)
   (let [root (.getElementById js/document "app")]
     (rf/dispatch-sync [::events/initialize-db])
-    (rf/dispatch-sync [::poll/init])
-    (rf/dispatch [::poll/set-rules poll-config/rules])
+    ;; (rf/dispatch-sync [::poll/init])
+    ;; (rf/dispatch [::poll/set-rules poll-config/rules])
     (d/unmount-component-at-node root)
-    (d/render [views/main-panel] root)))
+    (d/render [app] root)))
 
 
 (defn ^:after-load re-render []
