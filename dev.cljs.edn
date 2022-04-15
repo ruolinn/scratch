@@ -2,4 +2,6 @@
 ;;   :open-url "http://scratch.clj.com"}
 
 {:main scratch.core
- :output-to "resources/public/main.js"}
+ :output-to "resources/public/main.js"
+ :preloads
+ [devtools.preload]}

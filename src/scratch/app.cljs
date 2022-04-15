@@ -4,8 +4,7 @@
    [reagent-mui.colors :as colors]
    [reagent-mui.styles :as styles :refer [styled]]
    [scratch.util :as util]
-   [scratch.components.dashboard :refer [dashboard]]
-   ))
+   [scratch.components.dashboard :refer [dashboard]]))
 
 (def classes
   (util/make-classes "scratch-app"

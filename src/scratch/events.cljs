@@ -7,3 +7,13 @@
  ::initialize-db
  (fn-traced [_ _]
             db/default-db))
+
+(re-frame/reg-event-db
+ ::drawer-open
+ (fn [db _]
+   (assoc db :drawer-open? true)))
+
+(re-frame/reg-event-db
+ ::drawer-close
+ (fn [db _]
+   (assoc db :drawer-open? false)))

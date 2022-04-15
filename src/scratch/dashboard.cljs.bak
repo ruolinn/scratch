@@ -1,0 +1,98 @@
+(ns scratch.dashboard
+  (:require
+   [re-frame.core :as rf]
+   [reagent-mui.material.css-baseline :refer [css-baseline]]
+   [reagent-mui.material.drawer :refer [drawer]]
+   [reagent-mui.material.app-bar :refer [app-bar]]
+   [reagent-mui.material.toolbar :refer [toolbar]]
+   [reagent-mui.material.icon-button :refer [icon-button]]
+   [reagent-mui.material.typography :refer [typography]]
+   [reagent-mui.material.badge :refer [badge]]
+   [reagent-mui.material.divider :refer [divider]]
+   [reagent-mui.material.list :refer [list]]
+   [reagent-mui.material.list-item :refer [list-item]]
+   [reagent-mui.styles :as styles]
+   [reagent-mui.icons.menu :refer [menu]]
+   [reagent-mui.icons.chevron-left :refer [chevron-left]]
+   [reagent-mui.icons.notifications :refer [notifications]]))
+
+(rf/reg-sub
+ :drawer/open?
+ (fn [db]
+   (:drawer/open? db)))
+
+(rf/reg-event-db
+ :drawer/open
+ (fn [db _]
+   (assoc db :drawer/open? true)))
+
+(rf/reg-event-db
+ :drawer/close
+ (fn [db _]
+   (assoc db :drawer/open? false)))
+
+(def drawer-width 240)
+
+(def classes (let [prefix "dash"]
+               {:app-bar (str prefix "-app-bar")
+                :app-bar-shift (str prefix "-app-bar-shift")
+                :drawer-paper (str prefix "-drawer-paper")}))
+
+(defn custom-styles [{:keys [theme]}]
+  (let [spacing (:spacing theme)]
+    {(str "& ." (:app-bar classes)) {:margin-left (str "-" drawer-width)
+                                     :transition "opacity 0.4s 0.5s ease, visibility 0.4s 0.5s step-end"}
+     (str "& ." (:app-bar-shift classes)) {:margin-left drawer-width
+                                           :width (str "calc(100% - " drawer-width "px)")
+                                           :sx {:width {:sm (str "calc(100% - " drawer-width "px)")}}
+                                           }
+     (str "& ." (:drawer-paper classes)) {:paper {:position "relative"
+                                                  :white-space "nowrap"
+                                                  :width drawer-width}}}))
+
+
+(defn dashboard [{:keys [current-route]}]
+  (fn [{:keys [class-name]}]
+    (let [open? @(rf/subscribe [:drawer/open?])]
+      [:div {:class [class-name]}
+       [css-baseline]
+       [app-bar {:position "absolute"
+                                        ;:class [(:app-bar classes) (when open? (:app-bar-shift classes))]
+                 }
+        [toolbar
+         [icon-button {:edge "start"
+                       :color "inherit"
+                       :aria-label "open drawer"
+                       :on-click #(rf/dispatch [:drawer/open]) ; Open drawer
+                       :class {:margin-right 36}
+                       }
+          [menu]]
+         [typography {:component "h1"
+                      :variant "h6"
+                      :color "inherit"
+                      :no-wrap true
+                      ;;:class (.-title classes)
+                      }
+          "Dashboard"]]]
+
+       [drawer {:variant "permanent"
+                :open false}
+
+        [:div {:padding "0 8px"
+               :display "flex"}
+         [icon-button {:on-click #(rf/dispatch [:drawer/close])}
+          [chevron-left]]]
+        [divider]
+        [list
+         (for [route-name ["a"]]
+           ^{:key 1} [list-item {:text "hshshsh"
+                                 }])]
+        [divider]]])))
+
+
+(def dash (styles/styled dashboard custom-styles))
+
+(defn main []
+  (styles/theme-provider (styles/create-theme {:palette {:type "drak"}
+                                               :status {:danger "red"}})
+                         [dash]))
