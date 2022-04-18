@@ -5,19 +5,45 @@
    [reitit.frontend]
    [reitit.frontend.easy :as rfe]
    [reitit.frontend.controllers :as rfc]
-   [scratch.events :as events]))
+   [scratch.events :as events]
+   [reagent-mui.icons.home :refer [home]]
+   [reagent-mui.icons.art-track :refer [art-track]]))
 
+(defn main []
+  [:div
+   "hah"])
+
+(defn drawer-icon []
+  [home])
+
+(defn component-demo []
+  [:div
+   "component"])
+(defn component-demo-icon []
+  [art-track])
+
+(defn log-fn [& args]
+  (fn [& _] (apply js/console.log args)))
 
 (def routes
   ["/"
    [""
-    {:name :routes/home
-     :view dashboard/main
+    {:name "home"
+     :view main
      :link-text "Home"
-     :icon dashboard/drawer-icon
+     :icon drawer-icon
      :controllers
      [{:start (log-fn "Entering home page")
-       :stop (log-fn "Leaving home page")}]}]])
+       :stop (log-fn "Leaving home page")}]}]
+   ["components"
+    {:name "components"
+     :view component-demo
+     :link-text "Components"
+     :icon component-demo-icon
+     :controllers
+     [{:start (log-fn "Entering componments")
+       :stop (log-fn "Leaving components")}]
+     }]])
 
 (def router
   (reitit.frontend/router

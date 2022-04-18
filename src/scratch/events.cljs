@@ -1,7 +1,9 @@
 (ns scratch.events
   (:require [re-frame.core :as re-frame]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [scratch.db :as db]))
+            [scratch.db :as db]
+            [reitit.frontend.easy :as rfe]
+            [reitit.frontend.controllers :as rfc]))
 
 (re-frame/reg-event-db
  ::initialize-db

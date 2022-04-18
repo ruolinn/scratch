@@ -1,6 +1,8 @@
 (ns scratch.components.dashboard
   (:require
    [re-frame.core :as re-frame]
+   [reitit.frontend.easy :as rfe]
+   [reitit.core :as reitit]
    [reagent.core :as reagent :refer [atom with-let]]
    [scratch.util :as util]
    [scratch.events :as events]
@@ -14,6 +16,8 @@
    [reagent-mui.material.divider :refer [divider]]
    [reagent-mui.material.list :refer [list]]
    [reagent-mui.material.list-item :refer [list-item]]
+   [reagent-mui.material.list-item-icon :refer [list-item-icon]]
+   [reagent-mui.material.list-item-text :refer [list-item-text]]
    [reagent-mui.icons.menu :refer [menu]]
    [reagent-mui.icons.chevron-left :refer [chevron-left]]
    [reagent-mui.material.css-baseline :refer [css-baseline]]))
@@ -68,10 +72,13 @@
                            :transition on-drawer-paper-leaving
                            :width (spacing 7)
                            on-desktop {:width (spacing 9)}}
+      :app-bar-spacer (get-in theme [:mixins :toobar])
+      :content {:flex-grow 1
+                :height "100vh"
+                :overflow "auto"}
       :title {:flex-grow 1}})))
 
 (defn dashboard* [{:keys [class-name router current-route]}]
-  (js/console.log "router" router)
   (let [open? @(re-frame/subscribe [::subs/drawer-open?])]
     [:div {:class [class-name (:root classes)]}
      [css-baseline]
@@ -101,13 +108,21 @@
       [divider]
 
       [list
-       (for [val [{:name "A"}]
-             :let [text (:name val)]]
+       (for [route-name (reitit/route-names router)
+             :let [route (reitit/match-by-name router route-name)
+                   text (-> route :data :link-text)
+                   icon (-> route :data :icon)
+                   selected? (= route-name (-> current-route :data :name))]]
 
-         ^{:key 1}[list-item {:text text}])]
+         ^{:key route-name} [list-item {:button true :on-click #(rfe/push-state route-name) :selected selected?
+                                        :aa (js/console.log "selected? s" (-> current-route :data :name) route-name)}
+                             [list-item-icon [icon]]
+                             [list-item-text {:primary text}]])]
 
-      [divider]
-
-      ]]))
+      [divider]]
+     [:main {:class (:content classes)}
+      [:div {:class (:app-bar-spacer classes)}]
+      (when current-route
+        [(-> current-route :data :view) {:classes classes}])]]))
 
 (def dashboard (styled dashboard* styles))

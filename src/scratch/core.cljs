@@ -24,8 +24,9 @@
     ;; (rf/dispatch-sync [::poll/init])
     ;; (rf/dispatch [::poll/set-rules poll-config/rules])
     (dev-setup)
+    (routes/init-routes!)
     (d/unmount-component-at-node root)
-    (d/render [app {:router routes/router :current-route @(re-frame/subscribe [::subs/current-route])}] root)))
+    (d/render [app] root)))
 
 
 (defn ^:after-load re-render []
