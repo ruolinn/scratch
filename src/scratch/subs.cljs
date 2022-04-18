@@ -6,5 +6,9 @@
 (re-frame/reg-sub
  ::drawer-open?
  (fn [db _]
-   (js/console.log "fdsf")
    (:drawer-open? db)))
+
+(re-frame/reg-sub
+ ::current-route
+ (fn [db]
+   (:current-route db)))

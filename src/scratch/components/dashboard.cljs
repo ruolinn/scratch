@@ -70,7 +70,8 @@
                            on-desktop {:width (spacing 9)}}
       :title {:flex-grow 1}})))
 
-(defn dashboard* [{:keys [class-name]}]
+(defn dashboard* [{:keys [class-name router current-route]}]
+  (js/console.log "router" router)
   (let [open? @(re-frame/subscribe [::subs/drawer-open?])]
     [:div {:class [class-name (:root classes)]}
      [css-baseline]
@@ -80,7 +81,7 @@
        [icon-button {:edge "start"
                      :color "inherit"
                      :aria-label "open drawer"
-                     :on-click #(re-frame/dispatch [::events/drawer-open])  ; Open drawer
+                     :on-click #(re-frame/dispatch [::events/drawer-open]) ; Open drawer
                      :class [(:menu-button classes) (when open? (:menu-button-hidden classes))]}
         [menu]]
        [typography {:component "h1"
@@ -97,6 +98,14 @@
       [:div {:class (:toolbar-icon classes)}
        [icon-button {:on-click #(re-frame/dispatch [::events/drawer-close])} ; Close drawer
         [chevron-left]]]
+      [divider]
+
+      [list
+       (for [val [{:name "A"}]
+             :let [text (:name val)]]
+
+         ^{:key 1}[list-item {:text text}])]
+
       [divider]
 
       ]]))

@@ -1,11 +1,13 @@
 (ns ^:figwheel-hooks scratch.core
   (:require [reagent.core :as r]
             [reagent.dom :as d]
-            [re-frame.core :as rf]
+            [re-frame.core :as re-frame]
             ;;[ajax.core :refer [GET POST]]
             ;;[re-com.core :as re-com :refer [at]]
             ;;[re-pollsive.core :as poll]
             [scratch.events :as events]
+            [scratch.subs :as subs]
+            [scratch.routes :as routes]
             ;;[scratch.polling :as poll-config]
             ;;[scratch.views :as views]
             [scratch.app :refer [app]]))
@@ -16,14 +18,14 @@
     (println "dev mode")))
 
 (defn mount []
-  (rf/clear-subscription-cache!)
+  (re-frame/clear-subscription-cache!)
   (let [root (.getElementById js/document "app")]
-    (rf/dispatch-sync [::events/initialize-db])
+    (re-frame/dispatch-sync [::events/initialize-db])
     ;; (rf/dispatch-sync [::poll/init])
     ;; (rf/dispatch [::poll/set-rules poll-config/rules])
     (dev-setup)
     (d/unmount-component-at-node root)
-    (d/render [app] root)))
+    (d/render [app {:router routes/router :current-route @(re-frame/subscribe [::subs/current-route])}] root)))
 
 
 (defn ^:after-load re-render []

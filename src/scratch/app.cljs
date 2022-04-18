@@ -21,10 +21,8 @@
                        :secondary {:main (:A700 colors/red)}
                        :spotify   "#1db954"}}))
 
-(defn app* [{:keys [class-name]}]
+(defn app* [{:keys [class-name router current-route]}]
   [styles/theme-provider theme
-   (js/console.log theme)
-   (js/console.log "divier app")
-   [dashboard]])
+   [dashboard {:router router :current-route current-route}]])
 
 (def app (styled app* styles))
