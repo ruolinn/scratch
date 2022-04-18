@@ -34,9 +34,14 @@
                       :app-bar-shift
                       :menu-button
                       :menu-button-hidden
+                      :title
                       :drawer-paper
                       :drawer-paper-close
-                      :title
+                      :app-bar-spacer
+                      :container
+                      :content
+                      :paper
+                      :fixed-height
                       ]))
 
 (defn styles [{:keys [theme]}]
@@ -76,7 +81,14 @@
       :content {:flex-grow 1
                 :height "100vh"
                 :overflow "auto"}
-      :title {:flex-grow 1}})))
+      :container {:padding-top (spacing 4)
+                  :padding-bottom (spacing 4)}
+      :paper {:padding (spacing 4)
+              :display "flex"
+              :overflow "auto"
+              :flex-direction "column"}
+      :title {:flex-grow 1}
+      :fixed-height {:height 240}})))
 
 (defn dashboard* [{:keys [class-name router current-route]}]
   (let [open? @(re-frame/subscribe [::subs/drawer-open?])]
@@ -114,12 +126,11 @@
                    icon (-> route :data :icon)
                    selected? (= route-name (-> current-route :data :name))]]
 
-         ^{:key route-name} [list-item {:button true :on-click #(rfe/push-state route-name) :selected selected?
-                                        :aa (js/console.log "selected? s" (-> current-route :data :name) route-name)}
+         ^{:key route-name} [list-item {:button true :on-click #(rfe/push-state route-name) :selected selected?}
                              [list-item-icon [icon]]
                              [list-item-text {:primary text}]])]
 
-      [divider]]
+      #_[divider]]
      [:main {:class (:content classes)}
       [:div {:class (:app-bar-spacer classes)}]
       (when current-route

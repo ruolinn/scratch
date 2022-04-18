@@ -7,18 +7,19 @@
    [reitit.frontend.controllers :as rfc]
    [scratch.events :as events]
    [reagent-mui.icons.home :refer [home]]
-   [reagent-mui.icons.art-track :refer [art-track]]))
+   [reagent-mui.icons.art-track :refer [art-track]]
+   [scratch.views.dashboard :as dashboard]))
 
 (defn main []
   [:div
-   "hah"])
+   [:h1 "main"]])
 
 (defn drawer-icon []
   [home])
 
 (defn component-demo []
   [:div
-   "component"])
+   [:h1 "components"]])
 (defn component-demo-icon []
   [art-track])
 
@@ -29,7 +30,7 @@
   ["/"
    [""
     {:name "home"
-     :view main
+     :view dashboard/main
      :link-text "Home"
      :icon drawer-icon
      :controllers
